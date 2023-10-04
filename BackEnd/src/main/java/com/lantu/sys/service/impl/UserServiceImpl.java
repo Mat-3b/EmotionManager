@@ -35,7 +35,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         // 根据用户名和密码查询
         LambdaQueryWrapper<User> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(User::getUsername,user.getUsername());
-        wrapper.eq(User::getUsername,user.getUsername());
+        wrapper.eq(User::getPassword,user.getPassword());
         User loginUser = this.baseMapper.selectOne(wrapper);
 
         if(loginUser != null){

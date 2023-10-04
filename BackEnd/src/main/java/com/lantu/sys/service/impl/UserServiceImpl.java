@@ -1,5 +1,6 @@
 package com.lantu.sys.service.impl;
 
+import com.alibaba.fastjson2.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.lantu.sys.entity.User;
 import com.lantu.sys.mapper.UserMapper;
@@ -10,6 +11,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
@@ -49,6 +51,25 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         }
 
         // 结果不为空，则生成token，并将用户信息存入redis
+        return null;
+    }
+
+    @Override
+    public Map<String, Object> getUserInfo(String token) {
+
+        Object obj = redisTemplate.opsForValue().get(token);
+
+        if(obj != null){
+            User user = JSON.parseObject(JSON.toJSONString(obj),User.class);
+            if(user != null){
+                Map<String, Object> data =  new HashMap<>();
+                data.put("name",user.getUsername());
+//                data.put("avatar",user.getAvatar());
+                List<String> roleList = this.baseMapper.getRoleNamesByUserId(user.getId());
+                data.put("roles", roleList);
+                return data;
+            }
+        }
         return null;
     }
 }

@@ -34,6 +34,11 @@ public class UserController {
     public Result<Map<String,Object>> login(@RequestBody User user){
         Map<String,Object> data = userService.login(user);
 
-        return Result.success();
+        if(data != null){
+            return Result.success(data);
+        }
+        return Result.fail(20002,"用户名或密码错误");
+
+
     }
 }

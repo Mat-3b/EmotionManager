@@ -46,4 +46,10 @@ export default {
     }
     return this.updateUser(user);
   },
+  deleteUserById(id) {
+    return request({
+        url: `/user/${id}`,
+        method: 'delete',
+    });
+  },
 }

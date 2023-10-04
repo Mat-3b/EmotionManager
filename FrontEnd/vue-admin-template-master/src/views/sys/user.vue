@@ -44,7 +44,7 @@
         <el-table-column label="操作" width="180">
           <template slot-scope="scope">
             <el-button @click="openEditUI(scope.row.id)" type="primary" icon="el-icon-edit" circle></el-button>
-            <el-button type="danger" icon="el-icon-delete" circle></el-button>
+            <el-button @click="deleteUser(scope.row)" type="danger" icon="el-icon-delete" circle></el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -151,6 +151,26 @@ export default {
     }
   },
   methods: {
+    deleteUser(user) {
+      this.$confirm(`您确认删除用户 ${user.username} ?`, '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+      }).then(() => {
+        userApi.deleteUserById(user.id).then(response => {
+          this.$message({
+            type: 'success',
+            message: response.message
+          });
+          this.getUserList();
+        });
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          });          
+        });
+    },
     saveUser() {
       // 触发表单验证
       this.$refs.userFormRef.validate((valid) => {

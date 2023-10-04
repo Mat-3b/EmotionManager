@@ -103,4 +103,10 @@ public class UserController {
         User user = userService.getById(id);
         return Result.success(user);
     }
+
+    @DeleteMapping("/{id}")
+    public Result<User> deleteUserById(@PathVariable("id") Integer id){
+        userService.removeById(id);
+        return Result.success("删除用户已成功");
+    }
 }

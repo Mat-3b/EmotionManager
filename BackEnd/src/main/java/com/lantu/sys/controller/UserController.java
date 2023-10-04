@@ -90,4 +90,17 @@ public class UserController {
         userService.save(user);
         return Result.success("新增用户成功");
     }
+
+    @PutMapping
+    public Result<?> updateUser(@RequestBody User user){
+        user.setPassword(null);
+        userService.updateById(user);
+        return Result.success("修改用户成功");
+    }
+
+    @GetMapping("/{id}")
+    public Result<User> getUserById(@PathVariable("id") Integer id){
+        User user = userService.getById(id);
+        return Result.success(user);
+    }
 }

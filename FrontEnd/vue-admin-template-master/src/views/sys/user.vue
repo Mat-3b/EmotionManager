@@ -10,7 +10,7 @@
           <el-button @click="getUserList" type="primary" round icon="el-icon-search">查询</el-button>
         </el-col>
         <el-col :span="4" align="right">
-          <el-button @click="openEditUI" type="primary" icon="el-icon-plus" circle></el-button>
+          <el-button @click="openEditUI(null)" type="primary" icon="el-icon-plus" circle></el-button>
         </el-col>
       </el-row>
     </el-card>
@@ -42,6 +42,10 @@
         <el-table-column prop="backup" label="备注">
         </el-table-column>
         <el-table-column label="操作" width="180">
+          <template slot-scope="scope">
+            <el-button @click="openEditUI(scope.row.id)" type="primary" icon="el-icon-edit" circle></el-button>
+            <el-button type="danger" icon="el-icon-delete" circle></el-button>
+          </template>
         </el-table-column>
       </el-table>
     </el-card>
@@ -62,7 +66,7 @@
       <el-form-item label="用户名" prop="username" :label-width="formLabelWidth">
         <el-input v-model="userForm.username" autocomplete="off"></el-input>
       </el-form-item>
-      <el-form-item label="登录密码" prop="password" :label-width="formLabelWidth">
+      <el-form-item v-if="userForm.id == null || userForm.id == undefined" label="登录密码" prop="password" :label-width="formLabelWidth">
         <el-input type="password" v-model="userForm.password" autocomplete="off"></el-input>
       </el-form-item>
       <el-form-item label="编号" prop="gid" :label-width="formLabelWidth">
@@ -152,7 +156,7 @@ export default {
       this.$refs.userFormRef.validate((valid) => {
           if (valid) {
             // 提交请求
-            userApi.addUser(this.userForm).then(response => {
+            userApi.saveUser(this.userForm).then(response => {
               // 成功提示
               this.$message({
                 message: response.message,
@@ -174,8 +178,16 @@ export default {
       this.userForm = {};
       this.$refs.userFormRef.clearValidate();
     },
-    openEditUI() {
-      this.title = '新增用户';
+    openEditUI(id) {
+      if (id == null) {
+        this.title = "新增用户";
+      } else {
+        this.title = "修改用户";
+        userApi.getUserById(id).then(response => {
+          this.userForm = response.data;
+        });
+      }
+      
       this.dialogFormVisible = true;
     },
     handleSizeChange(pageSize) {
